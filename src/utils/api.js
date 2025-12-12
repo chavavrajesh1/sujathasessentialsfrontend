@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://sujathas-essentials-backend.onrender.com/api",
+  baseURL: "https://sujathasessentialsbackend.onrender.com/api",
   withCredentials: true,
 });
 
