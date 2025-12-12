@@ -58,7 +58,7 @@ const ProductDetails = () => {
 
     if (product.image) {
       if (product.image.startsWith("http")) return product.image;
-      return `https://sujathas-essentials-backend.onrender.com/${product.image}`;
+      return `https://sujathasessentialsbackend.onrender.com/${product.image}`;
     }
 
     return "/images/placeholder.png";
