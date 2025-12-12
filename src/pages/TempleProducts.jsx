@@ -8,7 +8,7 @@ import ProductCard from "../components/ProductCard";
 import debounce from "lodash.debounce";
 
 const PAGE_SIZE = 12;
-const API_BASE = "https://sujathas-essentials-backend.onrender.com/api";
+const API_BASE = "https://sujathasessentialsbackend.onrender.com/api";
 
 const TempleProducts = () => {
   const [products, setProducts] = useState([]);

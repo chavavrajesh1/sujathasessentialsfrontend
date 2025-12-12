@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToCart } from "../redux/cartSlice";
 
-const API_BASE = "https://sujathas-essentials-backend.onrender.com/api";
+const API_BASE = "https://sujathasessentialsbackend.onrender.com/api";
 
 const ProductDetails = () => {
   const { id } = useParams();
