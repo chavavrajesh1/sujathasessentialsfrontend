@@ -10,7 +10,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { MdTravelExplore, MdContactMail } from "react-icons/md";
 import { FaStore } from "react-icons/fa";
 
-const LOGO_SRC = "/images/sujathasessential.webp";
+const LOGO_SRC = "/images/sujathasessential.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
