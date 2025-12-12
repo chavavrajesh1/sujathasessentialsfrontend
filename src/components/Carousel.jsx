@@ -5,17 +5,17 @@ const Carousel = () => {
     const slides = [
         {
             id: 1,
-            img: "/images/pickles.webp",
+            img: "/images/pickles.png",
             text: "Premium Homemade Pickles",
         },
         {
             id: 2,
-            img: "/images/pooja.webp",
+            img: "/images/pooja.png",
             text: "Temple Essentials & Pooja Items",
         },
         {
             id: 3,
-            img: "/images/homeproducts.webp",
+            img: "/images/homeproducts.png",
             text: "Quality Home & Bathroom Products",
         },
     ];
