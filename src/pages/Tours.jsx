@@ -2,7 +2,7 @@ const tours = [
   {
     id: 1,
     title: "Kasi – Ayodhya – Gaya Yatra",
-    img: "/images/kashi.webp",
+    img: "/images/kashi.png",
     desc: "Premium pilgrimage covering Kasi, Ayodhya, Gaya, Prayagraj & nearby holy places.",
     places: "Kasi, Ayodhya, Gaya, Prayagraj, Chitrakoot & more",
     duration: "15 Days",
@@ -11,7 +11,7 @@ const tours = [
   {
     id: 2,
     title: "Rameswaram – Madurai – Kanyakumari Yatra",
-    img: "/images/rameswaram.webp",
+    img: "/images/rameswaram.png",
     desc: "Explore the most sacred temples of South India with comfortable travel & stay.",
     places: "Rameswaram, Kanyakumari, Madurai, Srirangam, Jambukeswaram",
     duration: "10 Days",

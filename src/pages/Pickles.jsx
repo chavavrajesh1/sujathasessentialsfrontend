@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import ProductCard from "../components/ProductCard";
 
-const API_BASE = "https://sujathas-essentials-backend.onrender.com/api";
+const API_BASE = "https://sujathasessentialsbackend.onrender.com/api";
 
 const Pickles = () => {
   const [products, setProducts] = useState([]);
