@@ -11,7 +11,7 @@ export default defineConfig({
     open: true,
     proxy: {
       "/api": {
-        target: "https://sujathas-essentials-backend.onrender.com",
+        target: "https://sujathasessentialsbackend.onrender.com",
         changeOrigin: true,
         secure: false,
       },

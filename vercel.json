@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://sujathas-essentials-backend.onrender.com/api/:path*"
+      "destination": "https://sujathasessentialsbackend.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
