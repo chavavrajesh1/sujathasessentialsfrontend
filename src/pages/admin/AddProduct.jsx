@@ -48,7 +48,7 @@ const AddProduct = () => {
 
       if (image) data.append("images", image);
 
-      await axios.post("/api/products", data);
+      await axios.post("/products", data);
 
       alert("Product added successfully");
       navigate("/admin/products");
