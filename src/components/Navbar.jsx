@@ -139,6 +139,10 @@ const Navbar = () => {
                     Sweets & Hot Foods
                   </Link>
 
+                  <Link to="/podulu" className="block px-4 py-2 hover:bg-gray-100 text-sm">
+                    Podulu
+                  </Link>
+
                   <Link
                     to="/temple"
                     className="block px-4 py-2 hover:bg-gray-100 text-sm"
@@ -281,6 +285,7 @@ const Navbar = () => {
                   <Link to="/pickle">Pickles</Link>
                   <Link to="/sweets">Sweets & Hot Foods</Link>
                   <Link to="/temple">Temple Products</Link>
+                  <Link to="/podulu">Podulu</Link>
                 </div>
               )}
             </div>

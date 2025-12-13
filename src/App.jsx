@@ -14,6 +14,7 @@ import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
 import Tours from "./pages/Tours";
 import Sweets from "./pages/Sweets";
+import Podulu from "./pages/Podulu";
 import NotFound from "./pages/NotFound";
 import Pickles from "./pages/Pickles";
 import CheckOut from "./pages/Checkout";
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/temple" element={<TempleProducts />} />
           <Route path="/pickle" element={<Pickles />} />
           <Route path="/sweets" element={<Sweets/>}/>
+          <Route path="/podulu" element={<Podulu/>}/>
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/tours" element={<Tours />} />

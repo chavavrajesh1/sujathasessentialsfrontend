@@ -22,6 +22,7 @@ const AddProduct = () => {
     pickles: ["veg", "nonveg", "andhra", "telangana"],
     temple: ["agarbatti", "puja-items", "sandal"],
     sweets: ["sweet", "hot"], // ✅ sweets & hot foods
+    podulu: ["powder", "chutney-powder"], // ✅
     home: [],
   };
 
@@ -108,6 +109,7 @@ const AddProduct = () => {
           <option value="">Select Category</option>
           <option value="pickles">Pickles</option>
           <option value="sweets">Sweets & Hot Foods</option> {/* ✅ */}
+          <option value="podulu">Podulu</option>
           <option value="temple">Temple Products</option>
           <option value="home">Home Essentials</option>
         </select>
