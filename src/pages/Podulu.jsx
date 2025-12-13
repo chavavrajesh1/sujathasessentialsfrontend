@@ -9,7 +9,7 @@ const Podulu = () => {
     const fetchPodulu = async () => {
       try {
         const { data } = await axios.get(
-          "/api/products?category=podulu"
+          "/products?category=podulu"
         );
         setProducts(data.products);
       } catch (err) {
