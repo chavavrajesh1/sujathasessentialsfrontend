@@ -1,8 +1,11 @@
 import { useState } from "react";
-import api from "../../utils/api";
+import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios";
 
 const AddProduct = () => {
-  const [form, setForm] = useState({
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
     name: "",
     slug: "",
     description: "",
@@ -12,37 +15,25 @@ const AddProduct = () => {
     countInStock: "",
   });
 
-  const [images, setImages] = useState([]);
-  const [preview, setPreview] = useState([]);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Category → SubCategory groups
-  const subCategoryOptions = {
+  const subCategoryMap = {
     pickles: ["veg", "nonveg", "andhra", "telangana"],
     temple: ["agarbatti", "puja-items", "sandal"],
-    home: []
+    sweets: ["sweet", "hot"], // ✅ sweets & hot foods
+    home: [],
   };
 
   const handleChange = (e) => {
-    let { name, value } = e.target;
-
-    // If category changes → reset subCategory
-    if (name === "category") {
-      setForm({
-        ...form,
-        category: value,
-        subCategory: "",
-      });
-      return;
-    }
-
-    setForm({ ...form, [name]: value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files);
-    setPreview(files.map((file) => URL.createObjectURL(file)));
+    setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -50,193 +41,121 @@ const AddProduct = () => {
     setLoading(true);
 
     try {
-      const fd = new FormData();
+      const data = new FormData();
+      Object.entries(formData).forEach(([key, value]) =>
+        data.append(key, value)
+      );
 
-      // Append only non-empty values
-      Object.entries(form).forEach(([key, value]) => {
-        if (value !== "" && value !== null && value !== undefined) {
-          fd.append(key, value);
-        }
-      });
+      if (image) data.append("images", image);
 
-      // Images
-      images.forEach((img) => fd.append("images", img));
+      await axios.post("/api/products", data);
 
-      await api.post("/products", fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      alert("Product Added Successfully!");
-
-      // Reset form
-      setForm({
-        name: "",
-        slug: "",
-        description: "",
-        category: "",
-        subCategory: "",
-        price: "",
-        countInStock: "",
-      });
-      setImages([]);
-      setPreview([]);
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Failed to upload product.");
+      alert("Product added successfully");
+      navigate("/admin/products");
+    } catch (error) {
+      alert(error.response?.data?.message || "Error adding product");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Add New Product</h1>
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded">
+      <h1 className="text-2xl font-bold mb-6">Add New Product</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-xl p-6 space-y-6"
-      >
-        {/* NAME + SLUG */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Product Name
-            </label>
-            <input
-              name="name"
-              className="w-full border p-2 rounded"
-              placeholder="Eg: Mango Pickle"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* NAME */}
+        <input
+          type="text"
+          name="name"
+          placeholder="Product Name"
+          className="w-full border p-2 rounded"
+          onChange={handleChange}
+          required
+        />
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Slug</label>
-            <input
-              name="slug"
-              className="w-full border p-2 rounded"
-              placeholder="mango-pickle"
-              value={form.slug}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-
-        {/* CATEGORY + SUBCATEGORY */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* CATEGORY */}
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Category</label>
-            <select
-              name="category"
-              className="w-full border p-2 rounded"
-              value={form.category}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Category</option>
-              <option value="pickles">Pickles</option>
-              <option value="temple">Temple Products</option>
-              <option value="home">Home & Bathroom</option>
-            </select>
-          </div>
-
-          {/* SUBCATEGORY */}
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Sub Category</label>
-            <select
-              name="subCategory"
-              className="w-full border p-2 rounded"
-              value={form.subCategory}
-              onChange={handleChange}
-              disabled={!form.category} // Disabled until category chosen
-            >
-              <option value="">Select Sub Category</option>
-
-              {form.category &&
-                subCategoryOptions[form.category].map((sc) => (
-                  <option key={sc} value={sc}>
-                    {sc}
-                  </option>
-                ))}
-            </select>
-          </div>
-        </div>
+        {/* SLUG */}
+        <input
+          type="text"
+          name="slug"
+          placeholder="Slug (unique)"
+          className="w-full border p-2 rounded"
+          onChange={handleChange}
+          required
+        />
 
         {/* DESCRIPTION */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Description</label>
-          <textarea
-            name="description"
-            className="w-full border p-2 rounded h-24"
-            placeholder="Write product description..."
-            value={form.description}
-            onChange={handleChange}
-          />
-        </div>
+        <textarea
+          name="description"
+          placeholder="Description"
+          className="w-full border p-2 rounded"
+          onChange={handleChange}
+        />
 
-        {/* PRICE + STOCK */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Price (₹)</label>
-            <input
-              type="number"
-              name="price"
-              className="w-full border p-2 rounded"
-              placeholder="Eg: 250"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        {/* CATEGORY */}
+        <select
+          name="category"
+          className="w-full border p-2 rounded"
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              category: e.target.value,
+              subCategory: "",
+            })
+          }
+          required
+        >
+          <option value="">Select Category</option>
+          <option value="pickles">Pickles</option>
+          <option value="sweets">Sweets & Hot Foods</option> {/* ✅ */}
+          <option value="temple">Temple Products</option>
+          <option value="home">Home Essentials</option>
+        </select>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Stock Quantity</label>
-            <input
-              type="number"
-              name="countInStock"
-              className="w-full border p-2 rounded"
-              placeholder="Eg: 20"
-              value={form.countInStock}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </div>
-
-        {/* IMAGES */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Upload Images</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
+        {/* SUB CATEGORY */}
+        {formData.category && subCategoryMap[formData.category].length > 0 && (
+          <select
+            name="subCategory"
             className="w-full border p-2 rounded"
-          />
-
-          <div className="flex gap-4 mt-3 flex-wrap">
-            {preview.map((url, i) => (
-              <img
-                key={i}
-                src={url}
-                className="w-24 h-24 object-cover rounded border"
-                alt="preview"
-              />
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Sub Category</option>
+            {subCategoryMap[formData.category].map((sub) => (
+              <option key={sub} value={sub}>
+                {sub.toUpperCase()}
+              </option>
             ))}
-          </div>
-        </div>
+          </select>
+        )}
 
-        {/* BUTTON */}
+        {/* PRICE */}
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
+          className="w-full border p-2 rounded"
+          onChange={handleChange}
+          required
+        />
+
+        {/* STOCK */}
+        <input
+          type="number"
+          name="countInStock"
+          placeholder="Stock Count"
+          className="w-full border p-2 rounded"
+          onChange={handleChange}
+        />
+
+        {/* IMAGE */}
+        <input type="file" onChange={handleImageChange} />
+
+        {/* SUBMIT */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 rounded-lg font-semibold text-white ${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-          }`}
+          className="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700"
         >
           {loading ? "Adding..." : "Add Product"}
         </button>
