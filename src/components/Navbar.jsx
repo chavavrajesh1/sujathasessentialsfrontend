@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -16,7 +15,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [search, setSearch] = useState("");
-  const dropdownRef = useRef();
+
+  const dropdownRef = useRef(null);
   const searchTimeout = useRef(null);
 
   const dispatch = useDispatch();
@@ -25,11 +25,14 @@ const Navbar = () => {
   const cartItems = useSelector((state) => state.cart.cartItems || []);
   const userInfo = useSelector((state) => state.user.userInfo);
 
-  const cartCount = cartItems.reduce((acc, item) => acc + (item.qty || 1), 0);
+  const cartCount = cartItems.reduce(
+    (acc, item) => acc + (item.qty || 1),
+    0
+  );
 
-  // =====================================
-  // 🔍 PURE JS DEBOUNCE (NO LODASH)
-  // =====================================
+  /* ===============================
+     SEARCH (DEBOUNCED)
+  =============================== */
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearch(value);
@@ -49,17 +52,19 @@ const Navbar = () => {
     }
   };
 
-  // =====================================
-  // 🔥 Close dropdown on outside click
-  // =====================================
+  /* ===============================
+     CLOSE DROPDOWN ON OUTSIDE CLICK
+  =============================== */
   useEffect(() => {
-    const close = (e) => {
+    const closeDropdown = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(null);
       }
     };
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
+
+    document.addEventListener("mousedown", closeDropdown);
+    return () =>
+      document.removeEventListener("mousedown", closeDropdown);
   }, []);
 
   const handleLogout = () => {
@@ -76,24 +81,22 @@ const Navbar = () => {
           <Link to="/" className="flex items-center gap-2">
             <img
               src={LOGO_SRC}
+              alt="Sujatha's Essentials"
               className="w-10 h-10 rounded object-cover"
-              alt="logo"
-              loading="lazy"
             />
             <span className="text-xl font-bold text-gray-800">
-              Sujatha's Essentials
+              Sujatha&apos;s Essentials
             </span>
           </Link>
 
           {/* DESKTOP SEARCH */}
-          <div className="hidden md:flex items-center relative">
-            <input id="navbar-search" name="search"
+          <div className="hidden md:flex items-center">
+            <input
               value={search}
               onChange={handleSearchChange}
               className="px-3 py-1 border rounded-l w-64"
-              placeholder="Search..."
+              placeholder="Search products..."
             />
-
             <button
               onClick={manualSearch}
               className="bg-yellow-500 text-white px-3 py-1 rounded-r"
@@ -103,36 +106,60 @@ const Navbar = () => {
           </div>
 
           {/* DESKTOP MENU */}
-          <div className="hidden md:flex items-center space-x-6" ref={dropdownRef}>
-
+          <div
+            className="hidden md:flex items-center space-x-6"
+            ref={dropdownRef}
+          >
             {/* SHOP DROPDOWN */}
             <div className="relative">
               <button
                 onClick={() =>
-                  setDropdownOpen(dropdownOpen === "shop" ? null : "shop")
+                  setDropdownOpen(
+                    dropdownOpen === "shop" ? null : "shop"
+                  )
                 }
-                className="hover:text-yellow-600 flex items-center gap-1"
+                className="hover:text-yellow-700 flex items-center gap-1 font-medium"
               >
                 <FaStore /> Shop
               </button>
 
               {dropdownOpen === "shop" && (
-                <div className="absolute bg-white shadow-lg rounded-md mt-2 w-64 p-2 z-50 dropdown-animate">
-                  <Link to="/pickle" className="block px-4 py-2 hover:bg-gray-100 text-sm">
+                <div className="absolute bg-white shadow-lg rounded-md mt-2 w-64 p-2 z-50">
+                  <Link
+                    to="/pickle"
+                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
                     Pickles (Veg & Non-Veg)
                   </Link>
-                  <Link to="/temple" className="block px-4 py-2 hover:bg-gray-100 text-sm">
+
+                  <Link
+                    to="/sweets"
+                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
+                    Sweets & Hot Foods
+                  </Link>
+
+                  <Link
+                    to="/temple"
+                    className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                  >
                     Temple Products
                   </Link>
                 </div>
               )}
             </div>
 
-            <Link to="/tours" className="hover:text-yellow-600 flex items-center gap-1">
+            <Link
+              to="/tours"
+              className="hover:text-yellow-700 flex items-center gap-1"
+            >
               <MdTravelExplore /> Tours
             </Link>
 
-            <Link to="/contact" className="hover:text-yellow-600 flex items-center gap-1">
+            <Link
+              to="/contact"
+              className="hover:text-yellow-700 flex items-center gap-1"
+            >
               <MdContactMail /> Contact
             </Link>
 
@@ -149,9 +176,11 @@ const Navbar = () => {
             {/* CART */}
             <Link to="/cart" className="relative">
               <AiOutlineShoppingCart size={24} />
-              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                {cartCount}
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             {/* USER */}
@@ -159,7 +188,9 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() =>
-                    setDropdownOpen(dropdownOpen === "user" ? null : "user")
+                    setDropdownOpen(
+                      dropdownOpen === "user" ? null : "user"
+                    )
                   }
                   className="px-3 py-1 bg-gray-900 text-white rounded"
                 >
@@ -167,8 +198,11 @@ const Navbar = () => {
                 </button>
 
                 {dropdownOpen === "user" && (
-                  <div className="absolute right-0 mt-2 bg-white shadow-lg border rounded w-40 p-2 z-50 dropdown-animate">
-                    <Link to="/profile" className="block px-3 py-1 hover:bg-gray-100">
+                  <div className="absolute right-0 mt-2 bg-white shadow-lg rounded w-40 p-2">
+                    <Link
+                      to="/profile"
+                      className="block px-3 py-1 hover:bg-gray-100"
+                    >
                       Profile
                     </Link>
                     <button
@@ -182,10 +216,16 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex space-x-2">
-                <Link to="/login" className="px-3 py-1 border rounded hover:bg-gray-200">
+                <Link
+                  to="/login"
+                  className="px-3 py-1 border rounded hover:bg-gray-200"
+                >
                   Login
                 </Link>
-                <Link to="/signup" className="px-3 py-1 bg-yellow-500 text-white rounded">
+                <Link
+                  to="/signup"
+                  className="px-3 py-1 bg-yellow-500 text-white rounded"
+                >
                   Sign Up
                 </Link>
               </div>
@@ -203,11 +243,10 @@ const Navbar = () => {
 
         {/* MOBILE MENU */}
         {menuOpen && (
-          <div className="md:hidden bg-yellow-100 px-5 py-4 space-y-4 animate-slideDown">
-
+          <div className="md:hidden bg-yellow-100 px-5 py-4 space-y-4">
             {/* MOBILE SEARCH */}
-            <div className="flex items-center">
-              <input id="navbar-search-mobile" name="search"
+            <div className="flex">
+              <input
                 value={search}
                 onChange={handleSearchChange}
                 className="flex-1 px-3 py-2 border rounded-l"
@@ -222,14 +261,16 @@ const Navbar = () => {
             </div>
 
             {/* SHOP */}
-            <div className="border rounded-md">
+            <div className="border rounded">
               <button
                 onClick={() =>
-                  setDropdownOpen(dropdownOpen === "shop" ? null : "shop")
+                  setDropdownOpen(
+                    dropdownOpen === "shop" ? null : "shop"
+                  )
                 }
-                className="w-full py-2 flex items-center justify-between"
+                className="w-full py-2 flex justify-between"
               >
-                <span className="flex items-center gap-2">
+                <span className="flex gap-2 items-center">
                   <FaStore /> Shop
                 </span>
                 <span>{dropdownOpen === "shop" ? "▲" : "▼"}</span>
@@ -237,56 +278,34 @@ const Navbar = () => {
 
               {dropdownOpen === "shop" && (
                 <div className="bg-white px-4 py-2 space-y-2">
-                  <Link to="/pickle" className="block hover:text-yellow-600">
-                    Pickles
-                  </Link>
-                  <Link to="/temple" className="block hover:text-yellow-600">
-                    Temple Products
-                  </Link>
+                  <Link to="/pickle">Pickles</Link>
+                  <Link to="/sweets">Sweets & Hot Foods</Link>
+                  <Link to="/temple">Temple Products</Link>
                 </div>
               )}
             </div>
 
-            <Link to="/tours" className="py-2 flex items-center gap-2">
-              <MdTravelExplore /> Tours
-            </Link>
-
-            <Link to="/contact" className="py-2 flex items-center gap-2">
-              <MdContactMail /> Contact
-            </Link>
-
-            {userInfo?.isAdmin && (
-              <Link
-                to="/admin/dashboard"
-                className="block py-2 text-blue-600 font-semibold"
-              >
-                Admin Panel
-              </Link>
-            )}
-
-            <Link to="/cart" className="py-2 flex items-center gap-2">
-              <AiOutlineShoppingCart size={22} /> Cart ({cartCount})
-            </Link>
+            <Link to="/tours">Tours</Link>
+            <Link to="/contact">Contact</Link>
+            <Link to="/cart">Cart ({cartCount})</Link>
 
             {userInfo ? (
               <>
-                <Link to="/profile" className="block py-2">Profile</Link>
-                <button onClick={handleLogout} className="block text-left py-2">
-                  Logout
-                </button>
+                <Link to="/profile">Profile</Link>
+                <button onClick={handleLogout}>Logout</button>
               </>
             ) : (
               <>
-                <Link to="/login" className="block py-2">Login</Link>
-                <Link to="/signup" className="block py-2">Signup</Link>
+                <Link to="/login">Login</Link>
+                <Link to="/signup">Signup</Link>
               </>
             )}
           </div>
         )}
       </nav>
 
-      {/* SPACER */}
-      <div className="h-16"></div>
+      {/* NAVBAR SPACER */}
+      <div className="h-16" />
     </>
   );
 };

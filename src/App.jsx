@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
 import Tours from "./pages/Tours";
+import Sweets from "./pages/Sweets";
 import NotFound from "./pages/NotFound";
 import Pickles from "./pages/Pickles";
 import CheckOut from "./pages/Checkout";
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/temple" element={<TempleProducts />} />
           <Route path="/pickle" element={<Pickles />} />
+          <Route path="/sweets" element={<Sweets/>}/>
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/tours" element={<Tours />} />
